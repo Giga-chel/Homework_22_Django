@@ -1,30 +1,35 @@
 from django.shortcuts import render
+from .models import Product, Contact
 
 
-# Контроллер для домашней страницы
 def home(request):
-    return render(request, 'catalog/home.html')
+    last_five_products = Product.objects.all().order_by('-created_at')[:5]
+
+    print("Последние 5 созданных продуктов:")
+    for p in last_five_products:
+        print(f"- {p.name} | Цена: {p.price}")
+
+    context = {
+        'object_list': last_five_products
+    }
+    return render(request, 'catalog/home.html', context)
 
 
-# Контроллер для страницы контактов (с логикой доп. задания)
 def contacts(request):
-    # Переменная для хранения сообщения
     message = None
+    contact_info = Contact.objects.first()
 
-    # Проверка метода запроса (POST - отправка формы)
     if request.method == 'POST':
-        # Получение данных из формы (в реальном проекте здесь была бы валидация)
         name = request.POST.get('name')
-        email = request.POST.get('email')
-        text = request.POST.get('text')
+        phone = request.POST.get('phone')
+        text = request.POST.get('message')
 
-        # Имитация успешной обработки
-        print(f"Получено сообщение от {name} ({email}): {text}")
-
+        print(f"Получено сообщение от {name} ({phone}): {text}")
         message = "Ваше сообщение успешно отправлено!"
 
     context = {
-        'message': message
+        'message': message,
+        'contact': contact_info
     }
 
     return render(request, 'catalog/contacts.html', context)
