@@ -1,0 +1,44 @@
+[
+{
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+        "name": "Рассылки",
+        "description": "Сервисы email-рассылок"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+        "name": "Телеграм боты",
+        "description": "Боты для Telegram"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+        "name": "СуперРассылка",
+        "description": "Мощный инструмент",
+        "image": "",
+        "category": 1,
+        "price": "140.00",
+        "created_at": "2026-06-21T11:17:48.063Z",
+        "updated_at": "2026-06-21T11:17:48.063Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+        "name": "ТГ Бот-Модератор",
+        "description": "Автоматическая модерация",
+        "image": "",
+        "category": 2,
+        "price": "55.00",
+        "created_at": "2026-06-21T11:17:48.069Z",
+        "updated_at": "2026-06-21T11:22:22.611Z"
+    }
+}
+]
