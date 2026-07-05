@@ -1,58 +1,46 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.core.paginator import Paginator
+from django.views.generic import ListView, DetailView, CreateView, View
+from django.shortcuts import render
 from .models import Product, Contact
 from .forms import ProductForm
 
 
-def home(request):
-    products_list = Product.objects.all().order_by('-created_at')
-
-    paginator = Paginator(products_list, 3)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    context = {
-        'page_obj': page_obj,
-    }
-    return render(request, 'catalog/home.html', context)
+class HomeListView(ListView):
+    model = Product
+    template_name = 'catalog/home.html'
+    context_object_name = 'page_obj'  # Имя переменной в шаблоне
+    paginate_by = 3
+    ordering = ['-created_at']
 
 
-def contacts(request):
-    message = None
-    contact_info = Contact.objects.first()
+class ContactsView(View):
+    def get(self, request):
+        contact_info = Contact.objects.first()
+        context = {
+            'contact': contact_info
+        }
+        return render(request, 'catalog/contacts.html', context)
 
-    if request.method == 'POST':
+    def post(self, request):
         name = request.POST.get('name')
         phone = request.POST.get('phone')
         text = request.POST.get('message')
         print(f"Получено сообщение от {name} ({phone}): {text}")
-        message = "Ваше сообщение успешно отправлено!"
 
-    context = {
-        'message': message,
-        'contact': contact_info
-    }
-    return render(request, 'catalog/contacts.html', context)
-
-
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    context = {
-        'product': product
-    }
-    return render(request, 'catalog/product_detail.html', context)
+        context = {
+            'message': "Ваше сообщение успешно отправлено!",
+            'contact': Contact.objects.first()
+        }
+        return render(request, 'catalog/contacts.html', context)
 
 
-def create_product(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('catalog:home')
-    else:
-        form = ProductForm()
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
+    context_object_name = 'product'
 
-    context = {
-        'form': form
-    }
-    return render(request, 'catalog/product_form.html', context)
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog/product_form.html'
+    success_url = '/'  # После создания редирект на главную
