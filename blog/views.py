@@ -1,5 +1,6 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
+from django.core.mail import send_mail
 from .models import BlogPost
 from .forms import BlogPostForm
 
@@ -44,3 +45,25 @@ class BlogPostDeleteView(DeleteView):
     model = BlogPost
     template_name = 'blog/blogpost_confirm_delete.html'
     success_url = reverse_lazy('blog:list')
+
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset=queryset)
+        obj.view_count += 1
+        obj.save()
+
+        if obj.view_count == 100:
+            subject = 'Поздравляем! Статья достигла 100 просмотров!'
+            message = f'Ваша статья "{obj.title}" набрала 100 просмотров!'
+            from_email = 'admin@skystore.com'
+            recipient_list = ['your_email@example.com']
+
+            send_mail(
+                subject,
+                message,
+                from_email,
+                recipient_list,
+                fail_silently=False,
+            )
+
+        return obj
