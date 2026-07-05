@@ -1,0 +1,17 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}{{ form.instance.pk|yesno:"Редактирование,Создание" }} статьи{% endblock %}
+
+{% block content %}
+<h1 class="text-center my-4">{{ form.instance.pk|yesno:"Редактировать статью,Создать статью" }}</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">Сохранить</button>
+            <a href="{% url 'blog:list' %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
