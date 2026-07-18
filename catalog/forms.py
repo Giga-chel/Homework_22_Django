@@ -12,6 +12,14 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ('name', 'description', 'image', 'category', 'price')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if isinstance(field.widget, forms.Select):
+                field.widget.attrs['class'] = 'form-select'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
     def clean_name(self):
         name = self.cleaned_data.get('name', '')
         for word in FORBIDDEN_WORDS:
