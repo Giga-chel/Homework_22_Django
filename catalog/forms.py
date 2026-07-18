@@ -39,3 +39,19 @@ class ProductForm(forms.ModelForm):
         if price is not None and price < 0:
             raise ValidationError('Цена продукта не может быть отрицательной.')
         return price
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image:
+            # Проверка размера (5 МБ)
+            max_size = 5 * 1024 * 1024
+            if image.size > max_size:
+                raise ValidationError('Размер файла не должен превышать 5 МБ.')
+
+            # Проверка формата (JPEG или PNG)
+            valid_extensions = ['jpg', 'jpeg', 'png']
+            ext = image.name.split('.')[-1].lower()
+            if ext not in valid_extensions:
+                raise ValidationError('Допустимые форматы изображений: JPEG или PNG.')
+
+        return image
