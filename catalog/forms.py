@@ -7,6 +7,7 @@ FORBIDDEN_WORDS = [
     'дешево', 'бесплатно', 'обман', 'полиция', 'радар'
 ]
 
+
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -15,7 +16,9 @@ class ProductForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            if isinstance(field.widget, forms.Select):
+            if isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs['class'] = 'form-check-input'
+            elif isinstance(field.widget, forms.Select):
                 field.widget.attrs['class'] = 'form-select'
             else:
                 field.widget.attrs['class'] = 'form-control'
@@ -43,15 +46,14 @@ class ProductForm(forms.ModelForm):
     def clean_image(self):
         image = self.cleaned_data.get('image')
         if image:
-            # Проверка размера (5 МБ)
-            max_size = 5 * 1024 * 1024
+            valid_formats = ['image/jpeg', 'image/png']
+            if image.content_type not in valid_formats:
+                raise ValidationError(
+                    'Допускаются только изображения в формате JPEG или PNG.'
+                )
+            max_size = 5 * 1024 * 1024  # 5 МБ
             if image.size > max_size:
-                raise ValidationError('Размер файла не должен превышать 5 МБ.')
-
-            # Проверка формата (JPEG или PNG)
-            valid_extensions = ['jpg', 'jpeg', 'png']
-            ext = image.name.split('.')[-1].lower()
-            if ext not in valid_extensions:
-                raise ValidationError('Допустимые форматы изображений: JPEG или PNG.')
-
+                raise ValidationError(
+                    'Размер изображения не должен превышать 5 МБ.'
+                )
         return image
