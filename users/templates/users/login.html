@@ -1,0 +1,14 @@
+{% extends 'catalog/base.html' %}
+{% block title %}Авторизация{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+        <h1 class="text-center my-4">Вход</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary w-100">Войти</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
