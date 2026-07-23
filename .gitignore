@@ -25,6 +25,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.py[cod]
+*.pyo
 
 # PyInstaller
 #   Usually these files are written by a python script from a template
@@ -60,6 +62,7 @@ pip-delete-this-directory.txt
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+media/
 
 # Flask stuff:
 instance/
@@ -156,6 +159,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.env.*
 
 # Spyder project settings
 .spyderproject
@@ -199,7 +203,7 @@ cython_debug/
 #   that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
 #   and can be added to the global gitignore or merged into this file. However, if you prefer,
 #   you could uncomment the following to ignore the entire vscode folder
-# .vscode/
+.vscode/
 
 # Ruff stuff:
 .ruff_cache/
@@ -214,3 +218,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+*.swp
+*.swo
