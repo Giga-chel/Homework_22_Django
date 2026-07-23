@@ -5,4 +5,15 @@
         <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:contacts' %}">Контакты</a>
         <a class="p-2 btn btn-outline-success" href="{% url 'catalog:create_product' %}">Добавить товар</a>
     </nav>
+
+    <div class="ms-auto">
+        {% if user.is_authenticated %}
+            <span class="me-2">{{ user.email }}</span>
+            <a href="{% url 'users:profile_edit' %}" class="btn btn-sm btn-outline-secondary">Профиль</a>
+            <a href="{% url 'users:logout' %}" class="btn btn-sm btn-outline-danger">Выйти</a>
+        {% else %}
+            <a href="{% url 'users:login' %}" class="btn btn-sm btn-outline-primary">Войти</a>
+            <a href="{% url 'users:register' %}" class="btn btn-sm btn-primary">Регистрация</a>
+        {% endif %}
+    </div>
 </div>
