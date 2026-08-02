@@ -2,8 +2,8 @@ from django.views.generic import ListView, DetailView, CreateView, View, UpdateV
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
-from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from .models import Product, Contact
 from .forms import ProductForm
 
@@ -36,6 +36,7 @@ class ContactsView(View):
         return render(request, 'catalog/contacts.html', context)
 
 
+@method_decorator(cache_page(60 * 5), name='dispatch')
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
