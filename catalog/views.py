@@ -2,8 +2,9 @@ from django.views.generic import ListView, DetailView, CreateView, View, UpdateV
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
-from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from .services import get_products_by_category
 from .models import Product, Contact
 from .forms import ProductForm
 
@@ -36,6 +37,7 @@ class ContactsView(View):
         return render(request, 'catalog/contacts.html', context)
 
 
+@method_decorator(cache_page(60 * 5), name='dispatch')
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
@@ -81,3 +83,12 @@ class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
         product.is_published = False
         product.save()
         return redirect('catalog:product_detail', pk=pk)
+
+class ProductsByCategoryView(ListView):
+    model = Product
+    template_name = 'catalog/products_by_category.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        category_id = self.kwargs.get('pk')
+        return get_products_by_category(category_id)
